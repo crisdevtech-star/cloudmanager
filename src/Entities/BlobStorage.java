@@ -5,17 +5,17 @@ import Enums.Region;
 
 public class BlobStorage extends CloudResource {
 
-    private  double capacity_tb;
-    private  double used_tb;
+    private  double capacityTb;
+    private  double usedTb;
 
-    public BlobStorage(String id, Region region, double capacity_tb, double used_tb) {
+    public BlobStorage(String id, Region region, double capacityTb, double usedTb) {
         super(id, region);
-        this.capacity_tb = capacity_tb;
-        this.used_tb = used_tb;
+        this.capacityTb = capacityTb;
+        this.usedTb = usedTb;
     }
 
     @Override
     public double calculateMonthlyCost() {
-        return this.used_tb * 0.02;
+        return this.usedTb * 0.02;
     }
 }

@@ -8,35 +8,37 @@ import Interfaces.Allocatable;
 
 public class VirtualMachine extends CloudResource implements Allocatable {
 
-    private double total_ram;
-    private double total_cpu;
-    private double used_ram;
-    private double used_cpu;
+    private double totalRam;
+    private double totalCpu;
+    private double usedRam;
+    private double usedCpu;
 
-    public VirtualMachine(String id, Region region, double total_ram,double used_ram,double total_cpu,double used_cpu) {
+    public VirtualMachine(String id, Region region, double totalRam,double usedRam,double totalCpu,double usedCpu) {
         super(id, region);
-        this.total_ram = total_ram;
-        this.used_ram = used_ram;
-        this.total_cpu = total_cpu;
-        this.used_cpu = used_cpu;
+        this.totalRam = totalRam;
+        this.usedRam = usedRam;
+        this.totalCpu = totalCpu;
+        this.usedCpu = usedCpu;
     }
 
     @Override
     public double calculateMonthlyCost() {
-
-
-        return 0;
+        return (this.totalCpu * 1.5) + (this.totalRam * 0.5);
     }
 
     @Override
     public boolean allocate(Workload workload) throws InsufficientCapacityException {
-
-        boolean resultRam = (this.total_ram - this.used_ram) >= workload.requiredRamRb();
-        boolean resultCpu = (this.total_cpu - this.used_cpu) >= workload.requiredCpuCores();
-        try {
-            return  resultCpu && resultRam;
-        } catch (Exception e) {
-            throw new InsufficientCapacityException(e.getMessage());
+        boolean hasRam = (this.totalRam - this.usedRam) >= workload.requiredRamRb();
+        boolean hasCpu = (this.totalCpu - this.usedCpu) >= workload.requiredCpuCores();
+        if (!hasRam || !hasCpu) {
+            throw new InsufficientCapacityException(
+                "Capacidad insuficiente en VM [" + getId() + "]. " +
+                "RAM requerida: " + workload.requiredRamRb() + "GB, " +
+                "CPU requerida: " + workload.requiredCpuCores() + " cores."
+            );
         }
+        this.usedRam += workload.requiredRamRb();
+        this.usedCpu += workload.requiredCpuCores();
+        return true;
     }
 }

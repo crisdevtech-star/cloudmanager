@@ -1,4 +1,4 @@
 package Inmutable;
 
-public record Workload(String task_id, double requiredRamRb, int requiredCpuCores) {
+public record Workload(String taskId, double requiredRamRb, int requiredCpuCores) {
 }
